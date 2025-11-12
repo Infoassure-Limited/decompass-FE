@@ -1,0 +1,97 @@
+<template>
+  <div v-loading="load">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>File</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <el-input
+              v-model="form.title"
+              type="text"
+              outline
+              placeholder="Title of document"
+              disabled
+            />
+          </td>
+          <td>
+            <input class="form-control" type="file" @change="onImageChange" />
+          </td>
+          <td>
+            <span>
+              <el-button
+                variant="success"
+                class="btn-icon rounded-circle"
+                :disabled="form.title === '' || uploadableFile === null"
+                @click="submit()"
+              >
+                <feather-icon icon="SaveIcon" />
+              </el-button>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+<script>
+import Resource from '@/api/resource'
+
+export default {
+  components: {},
+  props: {
+    uploadTemplate: {
+      type: Object,
+      default: () => null
+    }
+  },
+  data() {
+    return {
+      showTable: false,
+      form: {
+        title: ''
+      },
+      fill_fields_error: false,
+      load: false,
+      uploadableFile: null
+    }
+  },
+  created() {
+    this.form.title = this.uploadTemplate.template_title
+  },
+  methods: {
+    onImageChange(e) {
+      this.uploadableFile = e.target.files[0]
+    },
+    submit() {
+      this.load = true
+      const formData = new FormData()
+      formData.append('title', this.form.title)
+      formData.append('file_uploaded', this.uploadableFile)
+      formData.append('upload_id', this.uploadTemplate.id)
+      const updatePhotoResource = new Resource('uploads/upload-file')
+      updatePhotoResource
+        .store(formData)
+        .then(() => {
+          this.load = false
+          this.uploadableFile = null
+          this.form = {
+            title: '',
+            link: ''
+          }
+          this.$emit('reload')
+          this.$message('File upload successful')
+        })
+        .catch((e) => {
+          this.load = false
+          this.$message(e.response.message)
+        })
+    }
+  }
+}
+</script>

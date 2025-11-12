@@ -1,0 +1,92 @@
+<template>
+  <div v-loading="load">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>File</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <el-input v-model="form.title" type="text" outline placeholder="Title of document" />
+          </td>
+          <td>
+            <input class="form-control" type="file" @change="onImageChange" />
+          </td>
+          <td>
+            <span>
+              <b-button
+                variant="success"
+                class="btn-icon rounded-circle"
+                :disabled="form.title === '' || uploadableFile === null"
+                @click="submit()"
+              >
+                <feather-icon icon="SaveIcon" />
+              </b-button>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+<script>
+import Resource from '@/api/resource'
+
+export default {
+  components: { BButton },
+  directives: {
+    Ripple
+  },
+  props: {
+    section: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  data() {
+    return {
+      showTable: false,
+      form: {
+        title: ''
+      },
+      fill_fields_error: false,
+      load: false,
+      uploadableFile: null
+    }
+  },
+  methods: {
+    onImageChange(e) {
+      this.uploadableFile = e.target.files[0]
+    },
+    submit() {
+      this.load = true
+      const formData = new FormData()
+      formData.append('title', this.form.title)
+      formData.append('file_uploaded', this.uploadableFile)
+      formData.append('clause_id', this.section.clause_id)
+      formData.append('section_id', this.section.id)
+      const updatePhotoResource = new Resource('ndpa/clauses/upload-document-template')
+      updatePhotoResource
+        .store(formData)
+        .then(() => {
+          this.load = false
+          this.uploadableFile = null
+          this.form = {
+            title: '',
+            link: ''
+          }
+          this.$emit('reload')
+          this.$message('Template upload successful')
+        })
+        .catch((e) => {
+          this.load = false
+          this.$message(e.response.message)
+        })
+    }
+  }
+}
+</script>

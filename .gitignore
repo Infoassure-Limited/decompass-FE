@@ -1,0 +1,14 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+/dist*
+pnpm-debug
+stats.html
+.idea
+.env.dev
+.env.base
+.end.gitee
+.env.test
+.env.pro
