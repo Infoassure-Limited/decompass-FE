@@ -111,11 +111,12 @@
               </el-tooltip>
             </small>
             <el-select
-              v-model="form.assignee_id"
+              v-model="form.assignee_ids"
               placeholder="Select Assignee"
               filterable
+              multiple
               style="width: 100%"
-              @change="updateField($event, 'assignee_id', form)"
+              @change="updateField($event, 'assignee_ids', form)"
             >
               <el-option
                 v-for="(user, user_index) in staff"
@@ -298,7 +299,7 @@ export default {
         vulnerability_description: '',
         outcome: '',
         risk_owner: '',
-        assignee_id: '',
+        assignee_ids: [],
         control_no: '',
         control_location: '',
         control_description: '',
@@ -335,6 +336,7 @@ export default {
         vulnerability_description: '',
         outcome: '',
         risk_owner: '',
+        assignee_ids: [],
         control_no: '',
         control_location: '',
         control_description: '',
@@ -514,7 +516,7 @@ export default {
       formData.append('vulnerability_description', this.form.vulnerability_description)
       formData.append('outcome', this.form.outcome)
       formData.append('risk_owner', this.form.risk_owner)
-      formData.append('assignee_id', this.form.assignee_id)
+      formData.append('assignee_ids', this.form.assignee_ids)
       formData.append('control_no', this.form.control_no)
       formData.append('control_location', this.form.control_location)
       formData.append('control_description', this.form.control_description)

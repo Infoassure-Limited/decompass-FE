@@ -2,10 +2,11 @@
 <template>
   <div v-loading="loading">
     <el-col :md="24">
-      <small> The assignee will be reponsible for providing more details about this risk </small>
+      <small> The assignees will be reponsible for providing more details about this risk </small>
       <el-select
-        v-model="form.assignee_id"
+        v-model="form.assignee_ids"
         placeholder="Select Assignee"
+        multiple
         filterable
         style="width: 100%"
       >
@@ -22,26 +23,11 @@
         </el-option>
       </el-select>
     </el-col>
-    <div> Pick from the list of threats to assign. When done, click on Save. <br /> </div>
-    <div v-loading="loadSearch" style="max-height: 400px; overflow: auto">
-      <el-table
-        :data="threats"
-        row-key="id"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55" />
-        <el-table-column property="threat" label="Threats" />
-        <el-table-column label="Vulnerabilities">
-          <template #default="scope">{{ scope.row.vulnerability_description }}</template>
-        </el-table-column>
-      </el-table>
-    </div>
     <el-row>
       <el-col :md="24">
         <el-button-group class="pull-right">
           <el-button
-            :disabled="form.assignee_id !== null && form.risk_registers.length < 1"
+            :disabled="form.assignee_ids.length < 1 && form.threats.length < 1"
             type="success"
             @click="submit()"
           >
@@ -75,8 +61,8 @@ export default {
   data() {
     return {
       form: {
-        risk_registers: [],
-        assignee_id: null
+        assignee_ids: [],
+        threats: []
       }
     }
   },
@@ -85,18 +71,17 @@ export default {
       return this.$store.getters.baseServerUrl
     }
   },
-  mounted() {},
+  mounted() {
+    this.setAssetIds()
+  },
   methods: {
-    handleSelectionChange(val) {
-      const selectedData = []
-      selectedData.push(
-        ...val.map((item) => {
-          return {
-            id: item.id
-          }
-        })
-      )
-      this.form.risk_registers = selectedData
+    setAssetIds() {
+      const threats = []
+      this.threats.forEach((threat) => {
+        threats.push(threat.id)
+      })
+      this.form.threats = threats
+      this.form.assignee_ids = this.threats[0].assignee_ids !== null ? this.threats[0].assignee_ids : []
     },
     filterMethod(query, item) {
       return item.threats.toLowerCase().includes(query.toLowerCase())

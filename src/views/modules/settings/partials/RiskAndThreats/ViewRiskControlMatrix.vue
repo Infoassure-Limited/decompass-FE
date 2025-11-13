@@ -40,16 +40,18 @@
                 />
               </el-option-group>
             </el-select>
+            <div v-if="asset_risk_registers.length > 0">
+              <el-button
+                type="info"
+                @click="
+                  assignRiskRegisters(asset_risk_registers, asset_risk_registers[0].asset_name)
+                "
+              >
+                <icon icon="tabler:user-plus" />Assign Risk Library
+              </el-button>
+            </div>
             <div style="max-height: 550px; overflow: auto">
               <div v-if="asset_risk_registers.length > 0">
-                <el-button
-                  type="info"
-                  @click="
-                    assignRiskRegisters(asset_risk_registers, asset_risk_registers[0].asset_name)
-                  "
-                >
-                  <icon icon="tabler:user-plus" />Assign Risk Library
-                </el-button>
                 <div
                   v-for="(risk_assessment, assessments_index) in asset_risk_registers"
                   :key="assessments_index"
@@ -116,6 +118,19 @@
                 />
               </el-option-group>
             </el-select>
+            <div v-if="business_risk_registers.length > 0">
+              <el-button
+                type="info"
+                @click="
+                  assignRiskRegisters(
+                    business_risk_registers,
+                    business_risk_registers[0].business_process
+                  )
+                "
+              >
+                <icon icon="tabler:user-plus" />Assign Risk Library
+              </el-button>
+            </div>
             <div style="max-height: 550px; overflow: auto">
               <div v-if="business_risk_registers.length > 0">
                 <el-button
@@ -235,15 +250,16 @@
         </el-main>
       </el-container>
     </el-container>
-    <el-drawer
+    <el-dialog
       v-if="showAssignModal"
       v-model="showAssignModal"
       :title="`Assign Risk Registers for ${property_name}`"
-      direction="rtl"
-      size="87%"
+      width="35%"
+      :close-on-click-modal="false"
+      @close="fetchRisks"
     >
-      <AssignRiskRegisters :threats="selectedRiskRegisters" :staff="staff" @done="fetchRisks()" />
-    </el-drawer>
+      <AssignRiskRegisters :threats="selectedRiskRegisters" :staff="staff" />
+    </el-dialog>
   </div>
 </template>
 
@@ -430,7 +446,7 @@ export default {
     },
     fetchRisks(type = 'asset') {
       this.showAssignModal = false
-      // this.loading = true
+      this.loading = true
       const fetchRisksResource = new Resource('fetch-risk-registers')
       fetchRisksResource
         .list({

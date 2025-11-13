@@ -61,7 +61,10 @@ function canAccess(roles, permissions, modules, route) {
     if (excluded) {
       return false
     }
-    return hasRole || hasPermission || hasModule
+    if (route.meta.modules) {
+      return hasRole || hasPermission || hasModule
+    }
+    return hasRole || hasPermission
   }
 
   // If no meta.roles/meta.permissions inputted - the route should be accessible
