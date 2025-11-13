@@ -295,7 +295,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           icon: 'tabler:arrow-badge-right',
           title: 'BCMS',
           hint: 'Business Continuity Management System',
-          modules: ['bcms']
+          modules: ['bcms'],
+          permissions: ['manage-bcms-process']
         }
       },
       {
@@ -306,7 +307,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           icon: 'tabler:arrow-badge-right',
           title: 'ISMS',
           hint: 'Information Security Management System',
-          modules: ['isms']
+          modules: ['isms'],
+          permissions: ['manage-isms-process']
         }
       },
       {
@@ -317,7 +319,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           icon: 'tabler:arrow-badge-right',
           title: 'NDPA',
           hint: 'Nigeria Data Protection Act',
-          modules: ['ndpa']
+          modules: ['ndpa'],
+          permissions: ['manage-ndpa-process']
           // except: ['super', 'partner']
         }
       },
@@ -329,7 +332,8 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           icon: 'tabler:arrow-badge-right',
           title: 'TPDD',
           hint: 'Third Party Due Diligence',
-          modules: ['vdd']
+          modules: ['vdd'],
+          permissions: ['manage-vendor-relationship']
         }
       }
     ]
