@@ -1,16 +1,16 @@
 <template>
   <el-row :gutter="5">
-    <el-col :md="18">
+    <el-col :md="14">
       <ComplianceByRequirement
         :selected-module="selectedModule"
         :selected-project="selectedProject"
       />
     </el-col>
-    <el-col :md="6">
-      <aside>
-        <highcharts :options="overall_compliance" />
-      </aside>
+    <el-col :md="5">
       <highcharts :options="task_completion" />
+    </el-col>
+    <el-col :md="5">
+      <highcharts :options="overall_compliance" />
     </el-col>
   </el-row>
 </template>
@@ -169,7 +169,7 @@ export default {
             allowPointSelect: true,
             cursor: 'pointer',
             depth: 50,
-            innerSize: 200, // what makes it donut
+            innerSize: 100, // what makes it donut
             dataLabels: {
               enabled: false
               // format: '<b>{point.name}:</b> {point.y}<br>{point.percentage:.1f} %',

@@ -1,5 +1,5 @@
 <template>
-  <div style="min-height: 200px">
+  <div style="min-height: 400px">
     <el-skeleton :loading="load" :rows="6" animated />
     <div v-if="showChart">
       <highcharts :options="chart_report" />
@@ -35,7 +35,7 @@ export default {
       chart_report: {
         chart: {
           type: 'column',
-          inverted: true,
+          inverted: false,
           options3d: {
             enabled: false
           }
@@ -45,7 +45,7 @@ export default {
           align: 'center'
         },
         subtitle: {
-          text: 'Level of Conformity for each part of the NDPA Requirement'
+          text: ''
         },
         plotOptions: {
           series: {
@@ -61,8 +61,9 @@ export default {
         yAxis: {
           allowDecimals: false,
           min: 0,
+          max: 100,
           title: {
-            text: 'Scale'
+            text: 'Percentage (%)'
           },
           stackLabels: {
             enabled: true

@@ -348,6 +348,10 @@ export default {
     module: {
       type: String,
       default: 'bcms'
+    },
+    staff: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -464,8 +468,7 @@ export default {
       teams: [],
       asset_types: [],
       selectedAssetType: null,
-      assets: [],
-      staff: []
+      assets: []
     }
   },
   watch: {
@@ -481,7 +484,6 @@ export default {
   },
   created() {
     this.fetchThreats()
-    this.fetchStaff()
     this.form.client_id = this.clientId
     this.form.business_unit_id = this.businessUnitId
     this.form.module = this.module
@@ -489,12 +491,6 @@ export default {
     this.fetchBusinessProcesses()
   },
   methods: {
-    fetchStaff() {
-      const fetchUsersResource = new Resource('users/fetch-staff')
-      fetchUsersResource.list().then((response) => {
-        this.staff = response.staff
-      })
-    },
     setTeams() {
       this.form.business_process_id = this.selectedBusinessProcess.id
       // this.teams = this.selectedBusinessProcess.teams

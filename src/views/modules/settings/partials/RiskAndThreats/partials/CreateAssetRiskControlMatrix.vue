@@ -543,6 +543,10 @@ export default {
     module: {
       type: String,
       default: 'isms'
+    },
+    staff: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -662,7 +666,6 @@ export default {
       selectedAssetType: null,
       selectedAsset: null,
       assets: [],
-      staff: [],
       inputVisible: false
     }
   },
@@ -675,7 +678,6 @@ export default {
   },
   created() {
     this.form.client_id = this.clientId
-    this.fetchStaff()
     // this.fetchThreats()
     this.fetchAssetTypes()
     this.fetchRiskCategories()
@@ -683,12 +685,6 @@ export default {
   methods: {
     removeItem(data, index) {
       data.splice(index, 1)
-    },
-    fetchStaff() {
-      const fetchUsersResource = new Resource('users/fetch-staff')
-      fetchUsersResource.list().then((response) => {
-        this.staff = response.staff
-      })
     },
     refreshCategorySelection() {
       this.showRiskCategoryForm = false

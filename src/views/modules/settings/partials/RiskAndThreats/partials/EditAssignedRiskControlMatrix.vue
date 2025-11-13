@@ -16,133 +16,21 @@
           </h4>
         </div>
       </el-col>
-      <el-col v-if="canDelete" :md="4">
-        <el-button type="danger" @click="deleteRiskRegister()">
-          <icon icon="tabler:trash" /> Delete
-        </el-button>
-      </el-col>
     </el-row>
 
-    <v-stepper non-linear editable hide-actions :items="['Associated Risk', 'Existing Control']">
+    <v-stepper non-linear editable hide-actions :items="['Define Existing Control']">
       <template v-slot:item.1>
         <el-row :gutter="20">
-          <el-col v-if="form.module === 'ndpa'" :md="12">
-            <el-form-group label="Personal Data Item" label-for="asset_name">
-              <el-input
-                id="asset_name"
-                v-model="form.asset_name"
-                placeholder="Personal Data Item"
-                disabled
-                @blur="updateField(form.asset_name, 'asset_name', form)"
-              />
-            </el-form-group>
-          </el-col>
-          <el-col v-if="form.module !== 'isms'" :md="12">
-            <small>Risk Category</small>
-            <el-select
-              v-model="form.type"
-              placeholder="Risk Category"
-              style="width: 100%"
-              :disabled="form.module === 'ndpa'"
-              @change="(setRiskSubCategory($event), updateField($event, 'type', form))"
-            >
-              <el-option
-                v-for="(risk_type, type_index) in risk_types"
-                :key="type_index"
-                :value="risk_type.name"
-                :label="risk_type.name"
-              />
-            </el-select>
-          </el-col>
-          <el-col v-if="form.module !== 'ndpa' && form.module !== 'isms'" :md="12">
-            <small>Risk Sub-Category</small>
-            <el-select
-              v-model="form.sub_type"
-              placeholder="Risk Sub Category"
-              style="width: 100%"
-              @change="updateField($event, 'sub_type', form)"
-            >
-              <el-option
-                v-for="(sub_type, subtype_index) in sub_categories"
-                :key="subtype_index"
-                :value="sub_type"
-                :label="sub_type"
-              />
-            </el-select>
-          </el-col>
-          <el-col :md="24">
-            <v-text-field
-              v-model="form.threat"
-              variant="outlined"
-              label="Applicable Threat"
-              placeholder="State Threat"
-              @blur="updateField(form.threat, 'threat', form)"
-            />
-          </el-col>
-          <el-col :md="24">
-            <small>Risk Owner</small>
-            <el-select
-              v-model="form.risk_owner"
-              placeholder="Select Risk Owner"
-              filterable
-              style="width: 100%"
-              @change="updateField($event, 'risk_owner', form)"
-            >
-              <el-option
-                v-for="(user, user_index) in staff"
-                :key="user_index"
-                :value="user.name"
-                :label="user.name"
-              >
-                <span style="float: left">{{ user.name }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
-                  user.designation ? user.designation : ''
-                }}</span>
-              </el-option>
-            </el-select>
-          </el-col>
-          <el-col :md="24">
-            <small>
-              Assigned To
-              <el-tooltip
-                content="The assignee will be reponsible for providing more details about this risk"
-              >
-                <icon icon="tabler:info-circle" size="20" />
-              </el-tooltip>
-            </small>
-            <el-select
-              v-model="form.assignee_id"
-              placeholder="Select Assignee"
-              filterable
-              style="width: 100%"
-              @change="updateField($event, 'assignee_id', form)"
-            >
-              <el-option
-                v-for="(user, user_index) in staff"
-                :key="user_index"
-                :value="user.id"
-                :label="user.name"
-              >
-                <span style="float: left">{{ user.name }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
-                  user.designation ? user.designation : ''
-                }}</span>
-              </el-option>
-            </el-select>
-          </el-col>
           <el-col :md="24">
             <v-textarea
               v-model="form.vulnerability_description"
               variant="outlined"
               label="Vulnerability Description"
               placeholder="Describe Vulnerabilities to the applicable threat"
-              @blur="updateField(form.vulnerability_description, 'vulnerability_description', form)"
+              disabled
             />
           </el-col>
         </el-row>
-      </template>
-
-      <template v-slot:item.2>
         <el-row :gutter="20">
           <el-col :md="12">
             <small>Nature of Control</small>
@@ -266,10 +154,6 @@ export default {
     selectedRiskRegister: {
       type: Object,
       default: () => {}
-    },
-    staff: {
-      type: Array,
-      default: () => []
     }
   },
   data() {
@@ -298,7 +182,6 @@ export default {
         vulnerability_description: '',
         outcome: '',
         risk_owner: '',
-        assignee_id: '',
         control_no: '',
         control_location: '',
         control_description: '',
@@ -373,7 +256,8 @@ export default {
       teams: [],
       asset_types: [],
       selectedAssetType: null,
-      assets: []
+      assets: [],
+      staff: []
     }
   },
   computed: {
@@ -385,6 +269,7 @@ export default {
     this.form = this.selectedRiskRegister
     this.fetchRiskCategories()
     this.fetchThreats()
+    this.fetchStaff()
     // this.fetchBusinessProcesses()
     // this.fetchAssetTypes()
     // this.fetchAssets(this.form.asset_type_id)
@@ -399,6 +284,12 @@ export default {
         if (riskType.name === value) {
           this.sub_categories = riskType.sub_categories
         }
+      })
+    },
+    fetchStaff() {
+      const fetchUsersResource = new Resource('users/fetch-staff')
+      fetchUsersResource.list().then((response) => {
+        this.staff = response.staff
       })
     },
     fetchAssetTypes() {
@@ -514,7 +405,6 @@ export default {
       formData.append('vulnerability_description', this.form.vulnerability_description)
       formData.append('outcome', this.form.outcome)
       formData.append('risk_owner', this.form.risk_owner)
-      formData.append('assignee_id', this.form.assignee_id)
       formData.append('control_no', this.form.control_no)
       formData.append('control_location', this.form.control_location)
       formData.append('control_description', this.form.control_description)

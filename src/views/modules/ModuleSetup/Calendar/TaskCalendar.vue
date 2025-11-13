@@ -100,7 +100,7 @@ export default {
     setEvents(routines) {
       const events = []
       routines.forEach((routine) => {
-        const color = '#6c757d' // gray
+        let color = '#6c757d' // gray
         if (routine.status === 'completed') {
           color = '#02552e' // green
         } else if (routine.status === 'overdue') {

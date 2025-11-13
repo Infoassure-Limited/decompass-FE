@@ -16,71 +16,39 @@
             label="By Assets"
             lazy
           >
-            <el-button type="text" width="100%" class="mb-2" @click="createNewRiskRegister('isms')">
-              <icon icon="tabler:plus" /> Create New Asset Risk Library
-            </el-button>
-            <br />
-            <label for="">Pick an Asset</label>
-            <el-select
-              v-model="form.asset_id"
-              style="width: 100%"
-              filterable
-              @change="fetchRisks('asset')"
-            >
-              <el-option-group
-                v-for="(asset_type, asset_key) in asset_types"
-                :key="asset_key"
-                :label="asset_type.name"
-              >
-                <el-option
-                  v-for="asset in asset_type.assets"
-                  :key="asset.id"
-                  :label="asset.name"
-                  :value="asset.id"
-                />
-              </el-option-group>
-            </el-select>
             <div style="max-height: 550px; overflow: auto">
-              <div v-if="asset_risk_registers.length > 0">
-                <el-button
-                  type="info"
-                  @click="
-                    assignRiskRegisters(asset_risk_registers, asset_risk_registers[0].asset_name)
-                  "
-                >
-                  <icon icon="tabler:user-plus" />Assign Risk Library
-                </el-button>
-                <div
-                  v-for="(risk_assessment, assessments_index) in asset_risk_registers"
-                  :key="assessments_index"
-                >
-                  <CardNavView
-                    :id="`asset-${risk_assessment.id}`"
-                    :title="`${risk_assessment.risk_id}`"
-                    @clickToView="viewDetails(risk_assessment)"
+              <div v-if="asset_types !== null">
+                <el-collapse>
+                  <el-collapse-item
+                    v-for="(risk_registers, asset_type) in asset_types"
+                    :key="asset_type"
+                    :title="asset_type"
                   >
-                    <template #description>
-                      <br />
-                      <small>
-                        <em>
-                          <icon icon="tabler:arrow-badge-right" />
-                          {{ risk_assessment.threat }}
-                        </em>
-                      </small>
-                    </template>
-                  </CardNavView>
-                </div>
+                    <div
+                      v-for="(risk_register, register_index) in risk_registers"
+                      :key="register_index"
+                    >
+                      <CardNavView
+                        :id="`asset-${risk_register.id}`"
+                        :title="`${risk_register.risk_id}`"
+                        @clickToView="viewDetails(risk_register)"
+                      >
+                        <template #description>
+                          <br />
+                          <small>{{ risk_register.asset_name }}</small>
+                          <br />
+                          <em>
+                            <icon icon="tabler:arrow-badge-right" />
+                            {{ risk_register.threat }}
+                          </em>
+                        </template>
+                      </CardNavView>
+                    </div>
+                  </el-collapse-item>
+                </el-collapse>
               </div>
               <div v-else>
-                <el-empty description="No data found">
-                  <el-button
-                    v-if="form.asset_id !== null"
-                    type="primary"
-                    @click="loadAutoRiskRegisters(form.asset_id, 'asset')"
-                  >
-                    Generate Auto Risk Registers
-                  </el-button>
-                </el-empty>
+                <el-empty description="No data found" />
               </div>
             </div>
           </el-tab-pane>
@@ -94,72 +62,39 @@
             label="By Business Process"
             lazy
           >
-            <el-button type="text" width="100%" class="mb-2" @click="createNewRiskRegister('bcms')">
-              <icon icon="tabler:plus" /> Create New Process Risk Library
-            </el-button>
-            <el-select
-              v-model="form.business_process_id"
-              style="width: 100%"
-              filterable
-              @change="fetchRisks('process')"
-            >
-              <el-option-group
-                v-for="(business_unit, business_unit_key) in business_units"
-                :key="business_unit_key"
-                :label="business_unit.unit_name"
-              >
-                <el-option
-                  v-for="business_process in business_unit.business_processes"
-                  :key="business_process.id"
-                  :label="business_process.name"
-                  :value="business_process.id"
-                />
-              </el-option-group>
-            </el-select>
             <div style="max-height: 550px; overflow: auto">
-              <div v-if="business_risk_registers.length > 0">
-                <el-button
-                  type="info"
-                  @click="
-                    assignRiskRegisters(
-                      business_risk_registers,
-                      business_risk_registers[0].business_process
-                    )
-                  "
-                >
-                  <icon icon="tabler:user-plus" />Assign Risk Library
-                </el-button>
-                <div
-                  v-for="(risk_assessment, assessments_index) in business_risk_registers"
-                  :key="assessments_index"
-                >
-                  <CardNavView
-                    :id="`process-${risk_assessment.id}`"
-                    :title="`${risk_assessment.risk_id}`"
-                    @clickToView="viewDetails(risk_assessment)"
+              <div v-if="business_units !== null">
+                <el-collapse>
+                  <el-collapse-item
+                    v-for="(business_risk_registers, business_unit) in business_units"
+                    :key="business_unit"
+                    :title="business_unit"
                   >
-                    <template #description>
-                      <br />
-                      <small>
-                        <em>
-                          <icon icon="tabler:arrow-badge-right" />
-                          {{ risk_assessment.threat }}
-                        </em>
-                      </small>
-                    </template>
-                  </CardNavView>
-                </div>
+                    <div
+                      v-for="(business_risk_register, assessments_index) in business_risk_registers"
+                      :key="assessments_index"
+                    >
+                      <CardNavView
+                        :id="`process-${business_risk_register.id}`"
+                        :title="`${business_risk_register.risk_id}`"
+                        @clickToView="viewDetails(business_risk_register)"
+                      >
+                        <template #description>
+                          <br />
+                          <small>{{ business_risk_register.business_process }}</small>
+                          <br />
+                          <em>
+                            <icon icon="tabler:arrow-badge-right" />
+                            {{ business_risk_register.threat }}
+                          </em>
+                        </template>
+                      </CardNavView>
+                    </div>
+                  </el-collapse-item>
+                </el-collapse>
               </div>
               <div v-else>
-                <el-empty description="No data found">
-                  <el-button
-                    v-if="form.business_process_id !== null"
-                    type="primary"
-                    @click="loadAutoRiskRegisters(form.business_process_id, 'business_process')"
-                  >
-                    Generate Auto Risk Registers
-                  </el-button>
-                </el-empty>
+                <el-empty description="No data found" />
               </div>
             </div>
           </el-tab-pane>
@@ -195,7 +130,6 @@
               v-if="viewType === 'edit'"
               :client-id="selectedClient.id"
               :selected-risk-register="selectedRiskRegister"
-              :staff="staff"
               @done="((viewType = 'tabular'), loadData())"
               @deleted="((viewType = 'welcome'), loadData())"
             />
@@ -219,14 +153,12 @@
                 <CreateBusinessProcessRiskControlMatrix
                   v-if="form.business_unit_id !== null"
                   :client-id="selectedClient.id"
-                  :staff="staff"
                   :business-unit-id="form.business_unit_id"
                   @submitted="loadData"
                 />
               </div>
               <CreateAssetRiskControlMatrix
                 v-else
-                :staff="staff"
                 :client-id="selectedClient.id"
                 @submitted="loadData"
               />
@@ -235,15 +167,6 @@
         </el-main>
       </el-container>
     </el-container>
-    <el-drawer
-      v-if="showAssignModal"
-      v-model="showAssignModal"
-      :title="`Assign Risk Registers for ${property_name}`"
-      direction="rtl"
-      size="87%"
-    >
-      <AssignRiskRegisters :threats="selectedRiskRegisters" :staff="staff" @done="fetchRisks()" />
-    </el-drawer>
   </div>
 </template>
 
@@ -252,8 +175,7 @@
 import CreateAssetRiskControlMatrix from './partials/CreateAssetRiskControlMatrix.vue'
 import CreateBusinessProcessRiskControlMatrix from './partials/CreateBusinessProcessRiskControlMatrix.vue'
 import TabularRCM from './partials/TabularRiskControlMatrix.vue'
-import EditRCM from './partials/EditRiskControlMatrix.vue'
-import AssignRiskRegisters from './partials/AssignRiskRegisters.vue'
+import EditRCM from './partials/EditAssignedRiskControlMatrix.vue'
 import Resource from '@/api/resource'
 import checkPermission from '@/utils/permission'
 import CardNavView from '@/views/Components/CardNavView.vue'
@@ -263,7 +185,6 @@ export default {
     CreateAssetRiskControlMatrix,
     CreateBusinessProcessRiskControlMatrix,
     EditRCM,
-    AssignRiskRegisters,
     TabularRCM,
     CardNavView
   },
@@ -291,7 +212,7 @@ export default {
       unsubmitted_risk_registers: {},
       selectedRiskRegister: null,
       clients: [],
-      business_units: [],
+      business_units: null,
       showManageProject: false,
       showAssignModal: false,
       showAssignConsultantModal: false,
@@ -304,12 +225,9 @@ export default {
       },
       ndpa_risk_registers: null,
       filterText: '',
-      asset_types: [],
+      asset_types: null,
       activatedModules: [],
-      selectedModule: 'isms',
-      staff: [],
-      selectedRiskRegisters: [],
-      property_name: ''
+      selectedModule: 'isms'
     }
   },
   computed: {
@@ -341,7 +259,6 @@ export default {
     checkPermission,
     loadData() {
       this.form.client_id = this.selectedClient.id
-      this.fetchStaff()
       this.setModuleSlug()
       this.fetchBusinessUnits()
       this.fetchAssetTypes()
@@ -349,11 +266,16 @@ export default {
     setModuleSlug() {
       this.activatedModules = this.userData.modules
     },
-    assignRiskRegisters(risk_registers, property_name) {
-      this.selectedRiskRegisters = risk_registers
-      this.property_name = property_name
-      this.showAssignModal = true
-    },
+    // async setModuleSlug() {
+    //   await this.$store.dispatch('navItems/fetchActivatedModules', this.selectedClient)
+    //   const moduleSlug = []
+    //   this.clientActivatedProjects.forEach((project) => {
+    //     if (project.available_module) {
+    //       moduleSlug.push(project.available_module.slug)
+    //     }
+    //   })
+    //   this.activatedModules = moduleSlug
+    // },
     toggleMenu() {
       this.showMenu = !this.showMenu
     },
@@ -380,36 +302,10 @@ export default {
 
       // }
     },
-    fetchStaff() {
-      const fetchUsersResource = new Resource('users/fetch-staff')
-      fetchUsersResource.list().then((response) => {
-        this.staff = response.staff
-      })
-    },
-    loadAutoRiskRegisters(id, type = 'asset') {
-      this.loading = true
-      const param = { client_id: this.selectedClient.id, id }
-
-      let fetchAssetResource = new Resource('generate-asset-auto-risk-registers')
-      if (type === 'business_process') {
-        fetchAssetResource = new Resource('generate-process-auto-risk-registers')
-      }
-      fetchAssetResource
-        .store(param)
-        .then((response) => {
-          this.loadData()
-          this.loading = false
-        })
-        .catch((error) => {
-          this.loading = false
-          // console.log(error.response)
-          this.$message.error(error.response.data.message)
-        })
-    },
     fetchAssetTypes() {
-      const fetchAssetTypesResource = new Resource('risk-assessment/fetch-asset-types')
+      const fetchAssetTypesResource = new Resource('fetch-assigned-asset-risk-registers')
       fetchAssetTypesResource
-        .list({ client_id: this.selectedClient.id, module: this.module })
+        .list()
         .then((response) => {
           this.asset_types = response.asset_types
         })
@@ -418,32 +314,13 @@ export default {
         })
     },
     fetchBusinessUnits() {
-      const fetchBusinessUnitsResource = new Resource('risk-assessment/fetch-business-units')
+      const fetchBusinessUnitsResource = new Resource(
+        'fetch-assigned-business-units-risk-registers'
+      )
       fetchBusinessUnitsResource
         .list({ client_id: this.selectedClient.id, module: this.module })
         .then((response) => {
           this.business_units = response.business_units
-        })
-        .catch(() => {
-          this.loading = false
-        })
-    },
-    fetchRisks(type = 'asset') {
-      this.showAssignModal = false
-      // this.loading = true
-      const fetchRisksResource = new Resource('fetch-risk-registers')
-      fetchRisksResource
-        .list({
-          client_id: this.form.client_id,
-          business_process_id: this.form.business_process_id,
-          asset_id: this.form.asset_id,
-          module: this.module,
-          type
-        })
-        .then((response) => {
-          this.asset_risk_registers = response.asset_risk_registers
-          this.business_risk_registers = response.business_risk_registers
-          this.loading = false
         })
         .catch(() => {
           this.loading = false
