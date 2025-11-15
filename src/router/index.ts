@@ -271,7 +271,6 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     meta: {
       title: t('router.modules'),
       icon: 'tabler:packages',
-      modules: ['bcms', 'isms', 'vdd', 'ndpa'],
       except: ['super', 'partner']
       // permissions: ['manage-project-subscription']
     },

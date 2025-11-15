@@ -81,7 +81,8 @@ export default {
         threats.push(threat.id)
       })
       this.form.threats = threats
-      this.form.assignee_ids = this.threats[0].assignee_ids !== null ? this.threats[0].assignee_ids : []
+      this.form.assignee_ids =
+        this.threats[0].assignee_ids !== null ? this.threats[0].assignee_ids : []
     },
     filterMethod(query, item) {
       return item.threats.toLowerCase().includes(query.toLowerCase())

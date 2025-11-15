@@ -2,7 +2,7 @@
   <div>
     <h4>Welcome to the BCMS Module</h4>
     <el-tabs v-model="activeName" @tab-click="forceRerender">
-      <el-tab-pane :key="keyValue" label="Overview" name="#dashboard">
+      <el-tab-pane label="Overview" name="#dashboard">
         <Dashboard v-if="activeName === '#dashboard'" />
       </el-tab-pane>
       <el-tab-pane label="The BCMS Journey" name="#bcms-journey">
@@ -14,8 +14,8 @@
       <el-tab-pane label="BIA" name="#bia">
         <BIA v-if="activeName === '#bia'" />
       </el-tab-pane>
-      <el-tab-pane label="Risk Management" name="#risk-assessment" lazy>
-        <ConsolidatedRA module="bcms" view-only="bcms" />
+      <el-tab-pane label="Risk Management" name="#risk-management">
+        <ConsolidatedRA v-if="activeName === '#risk-management'" module="bcms" view-only="bcms" />
       </el-tab-pane>
       <!-- <el-tab-pane :key="keyValue" label="Compliance Assessment" name="#compliance-assessment" lazy>
         <ComplianceAssessment />
@@ -58,12 +58,11 @@ export default {
     checkRole,
     forceRerender(tab, event) {
       this.keyValue += 1
-      this.activeName = tab.props.name
       this.$router.push({ hash: `${tab.props.name}` })
+      this.activeName = tab.props.name
     },
     setCurrentPage() {
       this.activeName = window.location.hash !== '' ? window.location.hash : '#dashboard'
-      this.$router.push({ hash: `${this.activeName}` })
     }
     // showClicked(tab, event) {
     //   console.log(tab, event)

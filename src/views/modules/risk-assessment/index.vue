@@ -2,16 +2,16 @@
 <template>
   <div>
     <aside>
-      <el-row :gutter="10">
+      <el-row :gutter="5">
         <el-col
           v-if="checkPermission(['read-asset-risk-library', 'read-process-risk-library'])"
-          :md="4"
+          :md="8"
         >
           <CardNavView id="library" @clickToView="viewType = 'riskLibrary'">
             <template #description>
               <div align="center">
                 <icon icon="tabler:library" size="20" />
-                <strong>Risk Register</strong>
+                <strong>Assigned Risk Register</strong>
               </div>
             </template>
           </CardNavView>
@@ -26,7 +26,7 @@
             </template>
           </CardNavView>
         </el-col>
-        <el-col v-if="checkRole(['admin'])" :md="4">
+        <el-col v-if="checkRole(['admin'])" :md="8">
           <CardNavView id="setup" @clickToView="viewType = 'setupRA'">
             <template #description>
               <div align="center">

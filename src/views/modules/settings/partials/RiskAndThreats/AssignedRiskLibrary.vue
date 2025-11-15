@@ -1,13 +1,5 @@
 <template>
   <div>
-    <div>
-      <!-- <span class="pull-right">
-          <el-button type="secondary" @click="viewType = 'tabular'">
-            <icon icon="tabler:table" /> Tabular View
-          </el-button>
-        </span> -->
-      <h3>Manage Risk Library & Control Matrix</h3>
-    </div>
     <el-container style="height: 100%; border: 1px solid #eee">
       <el-aside v-if="showMenu" v-loading="loading" style="width: 350px; background-color: #fcfcfc">
         <el-tabs stretch>
@@ -16,7 +8,7 @@
             label="By Assets"
             lazy
           >
-            <div style="max-height: 550px; overflow: auto">
+            <div style="max-height: 650px; overflow: auto">
               <div v-if="asset_types !== null">
                 <el-collapse>
                   <el-collapse-item
@@ -34,8 +26,6 @@
                         @clickToView="viewDetails(risk_register)"
                       >
                         <template #description>
-                          <br />
-                          <small>{{ risk_register.asset_name }}</small>
                           <br />
                           <em>
                             <icon icon="tabler:arrow-badge-right" />
@@ -62,7 +52,7 @@
             label="By Business Process"
             lazy
           >
-            <div style="max-height: 550px; overflow: auto">
+            <div style="max-height: 650px; overflow: auto">
               <div v-if="business_units !== null">
                 <el-collapse>
                   <el-collapse-item
@@ -303,17 +293,20 @@ export default {
       // }
     },
     fetchAssetTypes() {
+      this.loading = true
       const fetchAssetTypesResource = new Resource('fetch-assigned-asset-risk-registers')
       fetchAssetTypesResource
         .list()
         .then((response) => {
           this.asset_types = response.asset_types
+          this.loading = false
         })
         .catch(() => {
           this.loading = false
         })
     },
     fetchBusinessUnits() {
+      this.loading = true
       const fetchBusinessUnitsResource = new Resource(
         'fetch-assigned-business-units-risk-registers'
       )
@@ -321,6 +314,7 @@ export default {
         .list({ client_id: this.selectedClient.id, module: this.module })
         .then((response) => {
           this.business_units = response.business_units
+          this.loading = false
         })
         .catch(() => {
           this.loading = false

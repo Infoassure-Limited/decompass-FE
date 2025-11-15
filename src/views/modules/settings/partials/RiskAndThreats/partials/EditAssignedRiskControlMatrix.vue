@@ -22,13 +22,15 @@
       <template v-slot:item.1>
         <el-row :gutter="20">
           <el-col :md="24">
-            <v-textarea
+            <label for="">Vulnerability Description</label>
+            <p>{{ form.vulnerability_description }}</p>
+            <!-- <v-textarea
               v-model="form.vulnerability_description"
               variant="outlined"
               label="Vulnerability Description"
               placeholder="Describe Vulnerabilities to the applicable threat"
               disabled
-            />
+            /> -->
           </el-col>
         </el-row>
         <el-row :gutter="20">
