@@ -11,6 +11,9 @@
       <el-tab-pane :key="keyValue" label="NDPA" name="#ndpa" lazy>
         <NDPA />
       </el-tab-pane>
+      <el-tab-pane :key="keyValue" label="PAM" name="#pam" lazy>
+        <PAM />
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -18,12 +21,13 @@
 import ISMS from '@/views/modules/ModuleSetup/ISMS/index.vue'
 import NDPA from '@/views/modules/ModuleSetup/NDPA/index.vue'
 import BCMS from '@/views/modules/ModuleSetup/BCMS/index.vue'
-
+import PAM from '@/views/modules/ModuleSetup/PAM/index.vue'
 export default {
   components: {
     BCMS,
     ISMS,
-    NDPA
+    NDPA,
+    PAM
     // FinancialsAndBilling,
     // ContractAndSla,
     // VRM
@@ -31,7 +35,7 @@ export default {
   },
   data() {
     return {
-      activeName: '#isms',
+      activeName: '#bcms',
       keyValue: 1
     }
   },
@@ -48,7 +52,7 @@ export default {
       this.keyValue += 1
     },
     setCurrentPage() {
-      this.activeName = window.location.hash !== '' ? window.location.hash : '#isms'
+      this.activeName = window.location.hash !== '' ? window.location.hash : '#bcms'
     }
     // showClicked(tab, event) {
     //   console.log(tab, event)

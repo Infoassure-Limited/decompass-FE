@@ -18,7 +18,7 @@ const intervalId = ref<NodeJS.Timeout | null>(null) // Use ref to store the inte
 
 const startInterval = () => {
   intervalId.value = setInterval(() => {
-    if (countDown.value <= 0) {
+    if (countDown.value < 1) {
       logOut()
       stopInterval()
       return

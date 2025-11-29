@@ -101,6 +101,7 @@
             <el-select
               v-model="form.control_type"
               placeholder="Select Type"
+              multiple
               style="width: 100%"
               @change="updateField($event, 'control_type', form)"
             >

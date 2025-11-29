@@ -7,49 +7,40 @@
         </div> -->
     <el-form label-position="top">
       <el-row :gutter="20">
+        <template v-for="(header, rowIndex) in form.columns" :key="rowIndex">
+          <el-col v-if="header !== ''" :md="24">
+            <small>{{ header }}</small>
+            <template v-if="form.dropdowns[`${rowIndex}2`]">
+              <el-select v-model="form.data[rowIndex]" @change="updateField(form.data, 'data')">
+                <el-option
+                  v-for="option in form.dropdowns[`${rowIndex}2`]"
+                  :key="option"
+                  :value="option"
+                  :label="option"
+                />
+              </el-select>
+            </template>
+            <template v-else>
+              <el-input v-model="form.data[rowIndex]" @blur="updateField(form.data, 'data')" />
+            </template>
+          </el-col>
+        </template>
+      </el-row>
+      {{ form.data }}
+      <!-- <el-row :gutter="20">
         <el-col :md="24">
           <el-form-item label="Personal Data Item (multiple selection enabled)">
             <el-tooltip
               target="personal_data_item"
               title="The actual data involved; this may be a single item or a logical group of data e.g. 'customer name' or 'customer name and address'"
             />
-            <!-- <el-input type="textarea"
-            id="personal_data_item"
-            v-model="form.personal_data_item"
-            placeholder="Enter Personal Data Item"
-            
-            @blur="updateField($event.target.value, 'personal_data_item')"
-          /> -->
-            <!-- <el-tag v-for="pdi in form.personal_data_item" :key="pdi" :closable="false">
-              {{ pdi }}
-            </el-tag>
-            <p></p> -->
-            <el-input-tag
-              v-model="form.personal_data_item"
-              tag-type="primary"
-              placeholder="Please input"
-              aria-label="Please click the Enter key after input"
-              @blur="updateField($event, 'personal_data_item')"
-            />
-            <!-- <el-select
+            <el-input
+              type="textarea"
               id="personal_data_item"
               v-model="form.personal_data_item"
-              multiple
-              filterable
-              allow-create
-              default-first-option
-              placeholder="Example: Name, Address, BVN, etc"
-              style="width: 100%"
-              @change="updateField($event, 'personal_data_item')"
-            >
-              <el-option
-                v-for="item in personalDataItems"
-                :key="item.id"
-                :label="item.item"
-                :value="item.item"
-              />
-            </el-select> -->
-            <small>You can type in an item if it is not on the list.</small>
+              placeholder="Enter Personal Data Item"
+              @blur="updateField($event.target.value, 'personal_data_item')"
+            />
           </el-form-item>
         </el-col>
         <el-col :md="12">
@@ -308,7 +299,7 @@
             />
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-button type="primary" @click="$emit('updated')"> Update </el-button>
     </el-form>
   </div>
@@ -391,6 +382,11 @@ export default {
     this.form = this.selectedData
   },
   methods: {
+    cellRef(rowIndex, colIndex) {
+      // const colLetter = String.fromCharCode(65 + colIndex) // A, B, C...
+      // console.log(colLetter)
+      return `${colIndex}${rowIndex + 2}` // +2 to skip header
+    },
     updateField(value, field) {
       const params = {
         field,

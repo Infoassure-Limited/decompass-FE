@@ -99,9 +99,10 @@
     >
       <create-business-unit :selected-client="selectedClient" @save="fetchBusinessUnits" />
     </el-dialog>
-    <el-dialog
+    <el-drawer
       v-model="isEditBusinessUnitSidebarActive"
       title="Edit Business Unit"
+      size="87%"
       :direction="direction"
       destroy-on-close
     >
@@ -110,7 +111,7 @@
         :business-unit="selectedBusinessUnit"
         @update="fetchBusinessUnits"
       />
-    </el-dialog>
+    </el-drawer>
     <el-drawer
       v-model="showBulkUploadModal"
       title="Upload Business Units from Spreadsheet"
@@ -118,7 +119,11 @@
       destroy-on-close
       hide-footer
     >
-      <UploadBulkBusinessUnits @update="fetchBusinessUnits" />
+      <BulkFileUpload
+        type="business_units"
+        :identifiers="['Unit Name']"
+        @saved="fetchBusinessUnits"
+      />
     </el-drawer>
   </div>
 </template>
@@ -129,13 +134,13 @@ import checkPermission from '@/utils/permission'
 import createBusinessUnit from './CreateBusinessUnit.vue'
 import editBusinessUnit from './EditBusinessUnit.vue'
 import BusinessProcesses from './BusinessProcesses.vue'
-import UploadBulkBusinessUnits from './UploadBulkBusinessUnits.vue'
+import BulkFileUpload from '@/views/Components/UploadExcel/BulkFileUpload.vue'
 export default {
   components: {
     createBusinessUnit,
     editBusinessUnit,
     BusinessProcesses,
-    UploadBulkBusinessUnits
+    BulkFileUpload
   },
   data() {
     return {
@@ -159,8 +164,8 @@ export default {
       columns: [
         'group_name',
         'unit_name',
-        'teams',
-        'function_performed',
+        // 'teams',
+        // 'function_performed',
         'processes',
         // 'access_code',
         'action'
@@ -229,6 +234,7 @@ export default {
       this.loading = true
       this.isEditBusinessUnitSidebarActive = false
       this.isCreateBusinessUnitSidebarActive = false
+      this.showBulkUploadModal = false
       const fetchBusinessUnitsResource = new Resource('business-units/fetch-business-units')
       fetchBusinessUnitsResource
         .list()

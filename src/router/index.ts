@@ -334,6 +334,18 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
           modules: ['vdd'],
           permissions: ['manage-vendor-relationship']
         }
+      },
+      {
+        path: 'pam-index',
+        component: () => import('@/views/modules/PAM/index.vue'),
+        name: 'PAM',
+        meta: {
+          icon: 'tabler:arrow-badge-right',
+          title: 'PAM',
+          hint: 'Performance And Monitoring'
+          // modules: ['pam'],
+          // permissions: ['manage-isms-process']
+        }
       }
     ]
   },

@@ -8,10 +8,17 @@
           </el-col>
           <el-col v-if="checkPermission(['create-business-process'])" :md="12">
             <span class="pull-right">
-              <el-button type="primary" @click="isCreateBusinessProcessActive = true">
-                <Icon icon="tabler-plus" />
-                <span class="align-middle">Create New Process</span>
-              </el-button>
+              <el-button-group>
+                <el-button type="primary" @click="isCreateBusinessProcessActive = true">
+                  <Icon icon="tabler-plus" />
+                  <span class="align-middle">Create New Process</span>
+                </el-button>
+
+                <el-button type="info" @click="showBulkUploadModal = true">
+                  <icon icon="tabler:upload" />
+                  <span class="align-middle">Upload From Spreadsheet</span>
+                </el-button>
+              </el-button-group>
             </span>
           </el-col>
         </el-row>
@@ -159,6 +166,19 @@
         <img :src="`${baseServerUrl}storage/${selectedDiagram}`" alt="Diagram Not Uploaded" />
       </div>
     </el-dialog>
+    <el-drawer
+      v-model="showBulkUploadModal"
+      title="Upload Business Processes from Spreadsheet"
+      size="87%"
+      destroy-on-close
+      hide-footer
+    >
+      <BulkFileUpload
+        type="business_processes"
+        :identifiers="['Business Unit', 'Process Name', 'Process Owner']"
+        @saved="fetchBusinessProcesses"
+      />
+    </el-drawer>
   </div>
 </template>
 
@@ -167,11 +187,13 @@ import Resource from '@/api/resource'
 import checkPermission from '@/utils/permission'
 import CreateBusinessProcess from './CreateBusinessProcess.vue'
 import EditBusinessProcess from './EditBusinessProcess.vue'
+import BulkFileUpload from '@/views/Components/UploadExcel/BulkFileUpload.vue'
 
 export default {
   components: {
     CreateBusinessProcess,
-    EditBusinessProcess
+    EditBusinessProcess,
+    BulkFileUpload
   },
   props: {
     businessUnitId: {
@@ -189,6 +211,7 @@ export default {
   },
   data() {
     return {
+      showBulkUploadModal: false,
       isCreateBusinessProcessActive: false,
       isEditBusinessProcessActive: false,
       statuses: ['In Progress', 'Completed', 'Complete and Validated'],
@@ -261,6 +284,7 @@ export default {
     fetchBusinessProcesses() {
       this.isCreateBusinessProcessActive = false
       this.isEditBusinessProcessActive = false
+      this.showBulkUploadModal = false
       this.loading = true
       const fetchBusinessProcesssResource = new Resource('business-units/fetch-business-processes')
       fetchBusinessProcesssResource

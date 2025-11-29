@@ -3,7 +3,7 @@
     <template v-slot:header>
       <div>
         <span class="pull-right">
-          <el-button type="info" @click="viewType = 'tabular'">
+          <el-button @click="viewType = 'tabular'">
             <icon icon="tabler:table" /> Tabular View
           </el-button>
         </span>
@@ -12,9 +12,17 @@
     </template>
     <el-container style="height: 100%; border: 1px solid #eee">
       <el-aside v-if="showMenu" v-loading="loading" width="400px">
-        <el-button type="primary" width="100%" @click="createNewEntry()">
-          <icon icon="tabler:plus" /> Create New Entry
-        </el-button>
+        <el-button-group>
+          <el-button type="primary" @click="createNewEntry()">
+            <icon icon="tabler:plus" /> Create New
+          </el-button>
+
+          <el-button type="info" @click="showBulkUploadModal = true">
+            <icon icon="tabler:upload" />
+            <span class="align-middle">Upload From Spreadsheet</span>
+          </el-button>
+        </el-button-group>
+
         <el-collapse>
           <!-- <div>
             Grouped by Business Unit/Process
@@ -101,10 +109,24 @@
         </el-main>
       </el-container>
     </el-container>
+    <el-drawer
+      v-model="showBulkUploadModal"
+      title="Upload PDA Data from Spreadsheet"
+      size="87%"
+      destroy-on-close
+      hide-footer
+    >
+      <BulkFileUpload
+        type="pda"
+        :identifiers="['Business Unit', 'Business Process', 'Personal Data Item']"
+        @saved="fetchPDA"
+      />
+    </el-drawer>
   </el-card>
 </template>
 
 <script>
+import BulkFileUpload from '@/views/Components/UploadExcel/BulkFileUpload.vue'
 import CreatePDA from './partials/CreatePDA.vue'
 import EditPDA from './partials/EditPDA.vue'
 import TabularPDA from './PDATable.vue'
@@ -114,6 +136,7 @@ import CardNavView from '@/views/Components/CardNavView.vue'
 
 export default {
   components: {
+    BulkFileUpload,
     CreatePDA,
     EditPDA,
     TabularPDA,
@@ -127,6 +150,7 @@ export default {
   },
   data() {
     return {
+      showBulkUploadModal: false,
       viewType: 'welcome',
       loading: false,
       loadNew: false,
@@ -200,6 +224,7 @@ export default {
         })
     },
     fetchPDA(load = true) {
+      this.showBulkUploadModal = false
       this.loading = load
       const pdaResource = new Resource('ndpa/pda')
       pdaResource
